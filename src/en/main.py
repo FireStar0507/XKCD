@@ -5,12 +5,16 @@ from seting import *  # 假设该文件包含folder_path、stencil_path、xkcd_u
 
 # 如果文件夹不存在，则创建
 os.makedirs(folder_path, exist_ok=True)
+stencil = '''## $title$
+
+![图片不见了~~~]($image$)
+
+[原址]($url$) [下载]($image$)
+'''
 
 def writeMD(info, index, title):
     """将漫画信息写入MD文件"""
-    with open(stencil_path) as f:
-        text = f.read()
-    
+    text = stencil
     # 替换占位符
     text = text.replace("$image$", info["image"])
     text = text.replace("$url$", xkcd_url + "/" + str(index))

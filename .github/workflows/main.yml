@@ -40,5 +40,9 @@ jobs:
         git config --local user.email "18064625480@163.com"
         git config --local user.name "FireStar0507"
         git add .
-        git commit -m "Automated commit from GitHub Action" || echo "No changes to commit"
-        git push
+        
+    - name: Push changes
+      uses:  ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.MY_GIT_TOKEN }}
+        branch: main

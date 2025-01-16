@@ -1,8 +1,9 @@
 import os
 import requests
 import logging
-import time  # 确保导入 time 以使用 sleep 功能
-from seting import *  # 假设该文件包含 folder_path、stencil_path、xkcd_url、sleep_time 和 max_once
+import time
+from seting import *
+from pathlib import Path
 
 
 # 确保父目录存在
@@ -39,7 +40,8 @@ def writeMD(info, index, title):
     text = text.replace("$title$", title)  # 替换标题占位符
 
     # 写入文件
-    md_file_path = os.path.join(folder_path, f"{index}.md")
+    # 使用 pathlib 重构文件路径操作
+    md_file_path = Path(folder_path) / f"{index:04}.md"
     with open(md_file_path, "w") as f:
         f.write(text)
     logging.info(f"已写入漫画信息到 {md_file_path}")
@@ -76,34 +78,36 @@ def get_xkcd_comics(start_number, count=20):
 
 def organize_comics():
     """整理下载的漫画文件"""
+    folder = Path(folder_path)
     all_images = sorted(
-        (f for f in os.listdir(folder_path) if f.endswith('.md')),
-        key=lambda x: int(x[:-3])  # 提取文件编号
+        (f for f in folder.glob('*.md')),
+        key=lambda x: int(x.stem)  # 提取文件编号
     )
 
     for i in range(0, len(all_images), 10):
         group_number = i // 10
-        group_folder = os.path.join(folder_path, f'{group_number * 10 + 1:04}-{group_number * 10 + 10:04}')
+        group_folder = folder / f'{group_number * 10 + 1:04}-{group_number * 10 + 10:04}'
 
         # 创建组文件夹
-        os.makedirs(group_folder, exist_ok=True)
+        group_folder.mkdir(exist_ok=True)
 
         for img in all_images[i:i+10]:
-            src_path = os.path.join(folder_path, img)
-            dst_path = os.path.join(group_folder, img)
-            os.rename(src_path, dst_path)  # 移动文件
-            logging.info(f"已移动: {img} 到 {group_folder}")
+            # 使用 pathlib 重构文件路径操作
+            src_path = folder / img.name
+            dst_path = group_folder / img.name
+            src_path.rename(dst_path)  # 移动文件
+            logging.info(f"已移动: {img.name} 到 {group_folder}")
 
 
 def testing():
-    from pathlib import Path
     current_dir = Path.cwd()
     absolute_path = (current_dir / folder_path).resolve()
     print("绝对路径:", absolute_path)
     print("cwd: ", current_dir)
 
+
 if __name__ == "__main__":
-    #testing()
+    # testing()
     latest_number = get_latest_number()
     get_xkcd_comics(latest_number, count=max_once)  # 下载新漫画
     organize_comics()  # 整理下载的漫画

@@ -10,6 +10,11 @@ parent_folder_path = os.path.dirname(folder_path)
 os.makedirs(parent_folder_path, exist_ok=True)
 
 
+# 确保日志目录存在
+log_dir = os.path.dirname(os.path.join(folder_path, 'comic_downloader.log'))
+os.makedirs(log_dir, exist_ok=True)
+
+
 # 配置日志记录
 logging.basicConfig(
     level=logging.INFO,  # 设置日志记录级别

@@ -95,12 +95,15 @@ def organize_comics():
             logging.info(f"已移动: {img} 到 {group_folder}")
 
 
-if __name__ != "__main__":
+def testing():
+    from pathlib import Path
+    current_dir = Path.cwd()
+    absolute_path = (current_dir / folder_path).resolve()
+    print("绝对路径:", absolute_path)
+    print("cwd: ", current_dir)
+
+if __name__ == "__main__":
+    #testing()
     latest_number = get_latest_number()
     get_xkcd_comics(latest_number, count=max_once)  # 下载新漫画
     organize_comics()  # 整理下载的漫画
-from pathlib import Path
-current_dir = Path.cwd()
-absolute_path = (current_dir / folder_path).resolve()
-print("绝对路径:", absolute_path)
-print("cwd: ", current_dir)

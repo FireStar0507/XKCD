@@ -1,48 +1,84 @@
 name: 更新XKCD漫画
 
+
+
 on:
+
   schedule:
+
     - cron:  '0 0 * * *'
+
     - cron:  '0 8 * * *'
+
     - cron:  '0 16 * * *'
+
     
+
   push:
+
     branches:
+
       - main  # 可以根据需要修改为其他分支
+
   workflow_dispatch:  # 允许手动触发工作流
 
+
+
 jobs:
+
   run-script:
+
     runs-on: ubuntu-latest
 
+
+
     steps:
+
     - name: Checkout代码
+
       uses: actions/checkout@v2
 
+
+
     - name: 设置Python
+
       uses: actions/setup-python@v2
+
       with:
+
         python-version: '3.10'  
+
         
+
     - name: 安装依赖
-      run: |
-        if [ -f mod.txt ]; then
-          pip install -r mod.txt
-        else
-          echo "mod.txt not found!"
-        fi
+
+      run: pip install -r mod.txt
+
+
 
     - name: 运行脚本
+
       run: python src/en/main.py
 
+
+
     - name: 提交更改
+
       run: |
+
         git config --local user.email "18064625480@163.com"
+
         git config --local user.name "FireStar0507"
-        git add .
+
         
+
     - name: Push changes
-      uses:  ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.MY_GIT_TOKEN }}
-        branch: main
+
+      run: |
+
+        git add.
+
+        git commit -m "更新XKCD漫画"
+
+        git push "https://${{ secrets.GITHUB_TOKEN }}@github.com/FireStar0507/XKCD.git" main
+
